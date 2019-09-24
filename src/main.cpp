@@ -1,5 +1,6 @@
 #include <iostream>
 #include <darknet.h>
+#include <time.h>
 
 using namespace std;
 
@@ -28,7 +29,7 @@ int main() {
     // Number of classes in "obj.names"
     // This is very rude method and in theory there must be much more elegant way.
     size_t classes = 0;
-    char **labels = get_labels(names_file);
+    char **labels = &(names_file);
     while (labels[classes] != nullptr) {
         classes++;
     }
@@ -41,7 +42,7 @@ int main() {
     // Load Darknet network itself.
     network *net = load_network(cfg_file, weight_file, 0);
     // In case of testing (predicting a class), set batch number to 1, exact the way it needs to be set in *.cfg file
-    set_batch_network(net, 1);
+    //set_batch_network(net, 1);
 
     // Load test image.
     image im = load_image_color(input, 0, 0);
@@ -55,13 +56,14 @@ int main() {
     float *frame_data = sized.data;
 
     // Do prediction.
-    double time = what_time_is_it_now();
-    network_predict(net, frame_data);
-    cout << "'" << input << "' predicted in " << (what_time_is_it_now() - time) << " sec." << endl;
+    time_t time_start = time(NULL);
+    network_predict(*net, frame_data);
+    cout << "'" << input << "' predicted in " << (time(NULL) - time_start) << " sec." << endl;
 
     // Get number fo predicted classes (objects).
     int num_boxes = 0;
-    detection *detections = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, nullptr, 1, &num_boxes);
+                         //*get_network_boxes(network *net, int w, int h, float thresh, float hier, int *map, int relative, int *num, int letter);
+    detection *detections = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, nullptr, 1, &num_boxes, 8);
     cout << "Detected " << num_boxes << " obj, class " << detections->classes << endl;
 
     // Uncomment this if you need sort predicted result.

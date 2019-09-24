@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.5.1)
 # Project name.
 set(PROJ_NAME DarknetApp)
 # Path to Darknet project folder.
-set(DARKNET_PATH /home/yurii/dev/darknet)
+set(DARKNET_PATH /usr/local/lib/)
 # Give a custom name to shared library which is provided by Darkned when the one compiled.
 set(DARKNET_LIB_NAME libdarknet)
 # Define C++ level, could be 11 or 17 as well.
